@@ -1,15 +1,13 @@
 # check http sessions and if a source IP is related to three different user-agents or more
 # output “xxx.xxx.xxx.xxx is a proxy” where xxx.xxx.xxx.xxx is the source IP
 
-global store: table[addr] of set[string] = {};
+global store: table[addr] of set[string] = table();
 
 event http_header(c: connection, is_orig: bool, name: string, value: string) {
 	if (c$id$orig_h !in store){
-		store[c$id$orig_h] = set();
 		if(c$http?$user_agent){
 			add store[c$id$orig_h][to_lower(c$http$user_agent)];
-		}
-		
+		}		
 	}
 	else{
 		if(c$http?$user_agent){
